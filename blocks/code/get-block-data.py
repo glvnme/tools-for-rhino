@@ -108,3 +108,4 @@ BasePlane = Plane.WorldXY
 BasePlane.Transform(instance.InstanceXform)
 
 collect_block_geometry(idef, instance.InstanceXform, Geometry)
+
