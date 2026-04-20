@@ -36,3 +36,13 @@ Grasshopper Rhino 8 Python 3 script that reads a block instance by GUID and retu
 - This script expects a placed block instance, not regular Rhino geometry.
 - It works in Rhino 8 Python 3.
 - More utilities can be added here over time under topic-based folders.
+
+### `WorkSession/export-visible-to-3dm.py`
+
+Rhino 8 ScriptEditor / EditPythonScript utility that:
+
+- collects all currently visible objects from the active document
+- includes Worksession reference objects
+- bakes visible block instances into plain geometry
+- recreates the used layer hierarchy
+- writes a standalone `.3dm` with source IDs stored as user text
