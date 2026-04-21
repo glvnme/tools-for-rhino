@@ -7,12 +7,14 @@ How to use
 3. Set input `G` to:
    - Type hint: `Guid`
    - Access: `Item`
-4. Create five outputs with these exact names:
+4. Create seven outputs with these exact names:
    - `Name`
    - `Keys`
    - `Values`
    - `Geometry`
    - `BasePlane`
+   - `BlockLayerPath`
+   - `ObjectLayerPaths`
 5. Copy the script below into the Python 3 component editor.
 6. Plug in the GUID of a block instance from the Rhino document.
 
@@ -22,6 +24,8 @@ What each output returns
 - `Values`: user text values stored on the block definition
 - `Geometry`: all block geometry transformed into world/model space
 - `BasePlane`: placement plane of the selected block instance
+- `BlockLayerPath`: full parent layer path of the placed block instance
+- `ObjectLayerPaths`: full layer path for each item in `Geometry`, in matching order
 
 Notes
 - This expects the GUID of a placed block instance, not regular geometry.
@@ -36,7 +40,18 @@ from Rhino.DocObjects import InstanceObject
 from Rhino.Geometry import Plane
 
 
-def collect_block_geometry(idef, accumulated_xform, geometry_list):
+def get_layer_full_path(doc, layer_index):
+    if layer_index < 0:
+        return None
+
+    layer = doc.Layers.FindIndex(layer_index)
+    if layer is None:
+        return None
+
+    return layer.FullPath
+
+
+def collect_block_geometry(doc, idef, accumulated_xform, geometry_list, object_layer_paths):
     objects = idef.GetObjects()
     if not objects:
         return
@@ -47,7 +62,13 @@ def collect_block_geometry(idef, accumulated_xform, geometry_list):
 
         if isinstance(obj, InstanceObject):
             nested_xform = accumulated_xform * obj.InstanceXform
-            collect_block_geometry(obj.InstanceDefinition, nested_xform, geometry_list)
+            collect_block_geometry(
+                doc,
+                obj.InstanceDefinition,
+                nested_xform,
+                geometry_list,
+                object_layer_paths,
+            )
             continue
 
         geo = obj.Geometry
@@ -60,6 +81,7 @@ def collect_block_geometry(idef, accumulated_xform, geometry_list):
 
         dup.Transform(accumulated_xform)
         geometry_list.append(dup)
+        object_layer_paths.append(get_layer_full_path(doc, obj.Attributes.LayerIndex))
 
 
 Name = None
@@ -67,11 +89,13 @@ Keys = []
 Values = []
 Geometry = []
 BasePlane = None
+BlockLayerPath = None
+ObjectLayerPaths = []
 
-guid_in = globals().get("guid", globals().get("x", None))
+guid_in = globals().get("G", globals().get("guid", globals().get("x", None)))
 
 if guid_in is None:
-    raise Exception("No input found. Rename the input to 'G' or use the default input name 'x'.")
+    raise Exception("No input found. Rename the input to 'G' or use 'guid' or the default input name 'x'.")
 
 doc = Rhino.RhinoDoc.ActiveDoc
 if doc is None:
@@ -97,6 +121,7 @@ if idef is None:
     raise Exception("Instance definition not found.")
 
 Name = idef.Name
+BlockLayerPath = get_layer_full_path(doc, instance.Attributes.LayerIndex)
 
 user_strings = idef.GetUserStrings()
 if user_strings:
@@ -107,5 +132,4 @@ if user_strings:
 BasePlane = Plane.WorldXY
 BasePlane.Transform(instance.InstanceXform)
 
-collect_block_geometry(idef, instance.InstanceXform, Geometry)
-
+collect_block_geometry(doc, idef, instance.InstanceXform, Geometry, ObjectLayerPaths)

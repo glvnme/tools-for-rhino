@@ -43,6 +43,8 @@ Rhino 8 ScriptEditor / EditPythonScript utility that:
 
 - collects all currently visible objects from the active document
 - includes Worksession reference objects
+- nests active-file layers under a parent layer named after the active file
 - bakes visible block instances into plain geometry
 - recreates the used layer hierarchy
 - writes a standalone `.3dm` with source IDs stored as user text
+- shows estimated per-source contribution percentages before offering to open the result
