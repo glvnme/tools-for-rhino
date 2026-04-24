@@ -1,60 +1,87 @@
 # Code Index
 
-Short overview of where the code lives and what it does.
+Quick map of the repository so it is easier to find the right script before opening Rhino.
 
 ## Root
 
-- `README.md`: project overview for Rhino 8 and Grasshopper scripts.
-- `index.md`: this quick code map.
+- `README.md`: project overview, environment notes, and featured tools
+- `index.md`: this folder-by-folder code map
 
-## Main Folders
+## Folder guide
 
-- `blocks/`: block-related tools.
-  - `blocks/code/get-block-data.py`: Grasshopper Python 3 script that reads a block instance by GUID and returns block name, user text, geometry, and base plane.
-  - `blocks/ui components/get-block-data.html`: UI/help asset for the block data tool.
+### `blocks/`
 
-- `cnc plates/`: CNC prep helpers for steel plates.
-  - `make-cnc-layers-per-plate-th-v0.2.py`: creates dated CNC layer trees by selected plate thickness.
+- `blocks/code/get-block-data.py`: Grasshopper Rhino 8 Python 3 script for reading block instance metadata, transformed geometry, and base plane from a GUID
+- `blocks/ui components/get-block-data.html`: help or UI asset for the block data tool
 
-- `data/`: data capture and metadata utilities.
-  - `data/fabrics/fabrics-store-pocket-data-to-notes.py`: Eto-based dialog for recording fabric pocket and seam data into document notes.
+### `cnc plates/`
 
-- `data management/`: object filtering and selection helpers.
-  - `filter-select-dots.py`: finds and filters text dots by name/type metadata and supports selection workflows.
+- `make-cnc-layers-per-plate-th-v0.2.py`: builds CNC layer structures grouped by plate thickness
 
-- `files/`: file import/report utilities.
-  - `import dedup.py`: imports geometry while tracking existing object IDs to avoid duplicate results.
+### `data/`
 
-- `formfinding/`: tensile and mesh form-finding experiments/tools.
-  - `glvn-ff-main-01.py` and related `glvn-*` scripts: form-finding solvers and surface/cable-link variants.
-  - `smooth-mesh-to-tolerance.py`: mesh smoothing utility.
+- `data/fabrics/fabrics-store-pocket-data-to-notes.py`: Eto dialog for capturing fabric pocket and seam data into Rhino document notes
 
-- `import/`: Rhino import cleanup tools, mainly for Revit/DWG workflows.
-  - `revit-based-dwg-deblocking*.py`: explodes nested blocks, extracts raw geometry, and in some cases joins meshes / purges imports.
+### `data management/`
 
-- `logger/`: work logging utilities tied to Rhino files.
-  - `WorkLogger.py`: UI + JSON logger for tracking work sessions alongside a Rhino document.
-  - `AutoLoader.py`: helper for loading or starting the logger workflow.
+- `filter-select-dots.py`: collects text dots, groups/filter them by value and metadata, and supports selection workflows
 
-- `render/`: rendering/material helpers.
-  - `match-material-color-to-object-color.py`: creates or reuses materials based on object display color.
+### `files/`
 
-- `rhino interface/`: small UI and display helpers.
-  - `display-object-name-0.1.py`: prints selected object names.
-  - `length_ft_in_fr.py` and `length_ft_in_fr_16.py`: length formatting helpers for feet/inches/fractions.
+- `import dedup.py`: imports external geometry while tracking existing object IDs to avoid duplicate additions
 
-- `samples/`: reference/example Rhino Python scripts.
-  - Contains small demos for annotation, points, curves, layers, import/export, and RhinoCommon interaction.
+### `formfinding/`
 
-- `steel/`: steel geometry creation tools.
-  - `generate-pipe-xs-0.01.py`: creates structural pipe geometry from selected pipe sizes and axis points.
+- `glvn-ff-main-01.py`: tensile form-finding workflow with Eto settings and reaction display options
+- `glvn-ff-main-surface-01.py`: surface-oriented form-finding variant
+- `glvn-ff-main-surface-links-01-1.py`: surface + link based study variant
+- `glvn-ff-main-surface-links-cable_links_01-2.py`: cable-link variation of the form-finding solver
+- `glvn-ff-main-surface-links-cable_links_-ridge-01-3.py`: ridge-focused cable-link variation
+- `smooth-mesh-to-tolerance.py`: mesh smoothing utility
 
-- `sun/`: sun-study output tools.
-  - `save_sun_image.py`: captures a sun-study image using Rhino sun panel settings and saved model context.
+### `import/`
 
-- `tools/`: general maintenance utilities.
-  - `purge_blocks_list.py`: removes block definitions/instances and runs a purge cleanup.
+- `revit-based-dwg-deblocking.py`: base deblocking workflow for imported DWG/Revit geometry
+- `revit-based-dwg-deblocking-single.py`: single-target deblocking variant
+- `revit-based-dwg-deblocking-multiple.py`: multiple-target deblocking variant
+- `revit-based-dwg-deblocking-multiple+meshes.py`: multiple-target variant with mesh handling
+- `revit-based-dwg-deblocking-multiple+meshes+purge.py`: cleanup variant with mesh handling and purge steps
 
-## Summary
+### `logger/`
 
-This repo is mostly a collection of standalone Rhino / Grasshopper scripts grouped by workflow: blocks, import cleanup, form-finding, fabrication, rendering, UI helpers, and project logging.
+- `WorkLogger.py`: JSON-backed work logger tied to the active Rhino file
+- `AutoLoader.py`: helper for loading or starting the work logger
+
+### `render/`
+
+- `match-material-color-to-object-color.py`: creates or reuses render materials based on object display color
+
+### `rhino interface/`
+
+- `display-object-name-0.1.py`: prints selected object names
+- `length_ft_in_fr.py`: converts lengths to feet-inch-fraction strings
+- `length_ft_in_fr_16.py`: feet-inch-fraction formatter tuned to sixteenth-inch output
+
+### `samples/`
+
+- Rhino Python and RhinoCommon examples for annotations, points, curves, layers, imports/exports, and basic scripting patterns
+
+### `steel/`
+
+- `generate-pipe-xs-0.01.py`: creates structural pipe geometry from predefined STD and XS sizes
+
+### `sun/`
+
+- `save_sun_image.py`: captures a sun-study image using Rhino sun settings and saved model context
+
+### `tools/`
+
+- `purge_blocks_list.py`: removes selected block definitions or instances and runs cleanup/purge steps
+
+## Reading order
+
+If you are new to the repo, a good sequence is:
+
+1. Read `README.md`
+2. Scan this index
+3. Open the target script and read the header/comments before running it
